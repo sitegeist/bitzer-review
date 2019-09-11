@@ -1,0 +1,16 @@
+{
+  "name": "sitegeist/bitzer-review",
+  "type": "neos-package",
+  "description": "The review plugin for the Bitzer content lifecycle task manager for Neos CMS",
+  "require": {
+    "neos/fusion": "~4.3",
+    "neos/content-repository": "~4.3",
+    "neos/fusion-afx": "~1.2",
+    "sitegeist/bitzer": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Sitegeist\\Bitzer\\Review\\": "Classes"
+    }
+  }
+}
