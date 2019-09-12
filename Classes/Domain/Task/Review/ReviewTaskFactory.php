@@ -54,7 +54,7 @@ class ReviewTaskFactory implements TaskFactoryInterface
 
         $object = $this->objectRepository->findByAddress($object);
         $objectInUserWorkspace = $this->objectRepository->findByAddress($objectAddressInUserWorkspace);
-        $target = $this->buildBackendUri($objectInUserWorkspace);
+        $target = $objectInUserWorkspace ? $this->buildBackendUri($objectInUserWorkspace) : null;
 
         return new ReviewTask(
             $identifier,
