@@ -5,6 +5,7 @@ namespace Sitegeist\Bitzer\Review\Domain\Task\Review;
 
 use Neos\Flow\Annotations as Flow;
 use Psr\Http\Message\UriInterface;
+use Sitegeist\Bitzer\Domain\Task\Command\ActivateTask;
 use Sitegeist\Bitzer\Domain\Task\Command\CancelTask;
 use Sitegeist\Bitzer\Domain\Task\Command\CompleteTask;
 use Sitegeist\Bitzer\Domain\Task\Command\ReassignTask;
@@ -70,9 +71,14 @@ final class ReviewTaskConstraintCheckPlugin implements ConstraintCheckPluginInte
         // cancelling tasks has no direct effect on objects
     }
 
+    public function checkActivateTask(ActivateTask $command, ConstraintCheckResult $constraintCheckResult = null): void
+    {
+        // activating tasks has no effect on objects
+    }
+
     public function checkCompleteTask(CompleteTask $command, ConstraintCheckResult $constraintCheckResult = null): void
     {
-        // completion tasks has no effect on objects
+        // completing tasks has no effect on objects
     }
 
     private function requireObjectToBeDefined(

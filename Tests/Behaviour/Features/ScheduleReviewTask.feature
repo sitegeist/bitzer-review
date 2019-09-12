@@ -4,8 +4,7 @@ Feature: Schedule task
   As a user of Bitzer I want to be able to schedule a review task
 
   Background:
-    Given I have the following content dimensions:
-      | Identifier | Default |
+    Given I have no content dimensions
     And I have the following NodeTypes configuration:
     """
     'unstructured': []
