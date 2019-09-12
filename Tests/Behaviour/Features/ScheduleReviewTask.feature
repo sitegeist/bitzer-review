@@ -23,7 +23,7 @@ Feature: Schedule task
       | Identifier             | Path                                           | Node Type                         | Properties                                                                    | Workspace |
       | sites                  | /sites                                         | unstructured                      | {}                                                                            | live      |
       | sity-mc-siteface       | /sites/sity-mc-siteface                        | Neos.Neos:Document                | {}                                                                            | live      |
-      | nody-mc-nodeface       | /sites/sity-mc-siteface/sity-mc-siteface       | Sitegeist.Bitzer:Testing.Document | {"title":"Nody McNodeface", "uriPathSegment":"nody-mc-nodeface"}              | live      |
+      | nody-mc-nodeface       | /sites/sity-mc-siteface/nody-mc-nodeface       | Sitegeist.Bitzer:Testing.Document | {"title":"Nody McNodeface", "uriPathSegment":"nody-mc-nodeface"}              | live      |
       | sir-david-nodenborough | /sites/sity-mc-siteface/sir-david-nodenborough | Sitegeist.Bitzer:Testing.Document | {"title":"Sir David Nodenborough", "uriPathSegment":"sir-david-nodenborough"} | live      |
     And I have the following sites:
       | nodeName         | name | siteResourcesPackageKey |
@@ -100,7 +100,7 @@ Feature: Schedule task
     And I expect this task to be scheduled to "2020-01-02T00:00:00+00:00"
     And I expect this task to be assigned to "Sitegeist.Bitzer:TestingAgent"
     And I expect this task to be about '{"nodeAggregateIdentifier":"nody-mc-nodeface", "workspaceName":"live", "dimensionSpacePoint":{}}'
-    And I expect this task to have the target "http://localhost/nody-mc-nodeface@user-me.html"
+    And I expect this task to have the adjusted target "http://localhost/neos/content?node=%2Fsites%2Fsity-mc-siteface%2Fnody-mc-nodeface%40user-me"
     And I expect this task to have the properties:
       | Key         | Value            |
       | description | task description |

@@ -23,7 +23,7 @@ Feature: Schedule task
       | Identifier             | Path                                           | Node Type                         | Properties                                                                    | Workspace |
       | sites                  | /sites                                         | unstructured                      | {}                                                                            | live      |
       | sity-mc-siteface       | /sites/sity-mc-siteface                        | Neos.Neos:Document                | {}                                                                            | live      |
-      | nody-mc-nodeface       | /sites/sity-mc-siteface/sity-mc-siteface       | Sitegeist.Bitzer:Testing.Document | {"title":"Nody McNodeface", "uriPathSegment":"nody-mc-nodeface"}              | live      |
+      | nody-mc-nodeface       | /sites/sity-mc-siteface/nody-mc-nodeface       | Sitegeist.Bitzer:Testing.Document | {"title":"Nody McNodeface", "uriPathSegment":"nody-mc-nodeface"}              | live      |
       | sir-david-nodenborough | /sites/sity-mc-siteface/sir-david-nodenborough | Sitegeist.Bitzer:Testing.Document | {"title":"Sir David Nodenborough", "uriPathSegment":"sir-david-nodenborough"} | live      |
     And I have the following sites:
       | nodeName         | name | siteResourcesPackageKey |
@@ -35,7 +35,7 @@ Feature: Schedule task
     'Sitegeist.Bitzer:TestingAdministrator':
       parentRoles: ['Sitegeist.Bitzer:Administrator']
     """
-    When the command ScheduleTask is executed with payload:
+    And the command ScheduleTask is executed with payload:
       | Key            | Value                                                                                            |
       | taskIdentifier | "tasky-mc-taskface"                                                                              |
       | taskClassName  | "Sitegeist\\Bitzer\\Review\\Domain\\Task\\Review\\ReviewTask"                                    |
@@ -48,14 +48,15 @@ Feature: Schedule task
     When the command SetNewTaskObject is executed with payload and exceptions are caught:
       | Key            | Value               |
       | taskIdentifier | "tasky-mc-taskface" |
-    Then the last command should have thrown an exception of type "ObjectIsInvalid"
+    Then the last command should have thrown an exception of type "ObjectIsUndefined"
 
   Scenario: Try to remove the object from a review task using a constraint check result
     Given exceptions are collected in a constraint check result
+    And I am authenticated as existing user "me"
     When the command SetNewTaskObject is executed with payload:
       | Key            | Value               |
       | taskIdentifier | "tasky-mc-taskface" |
-    Then I expect the constraint check result to contain an exception of type "ObjectIsInvalid" at path "object"
+    Then I expect the constraint check result to contain an exception of type "ObjectIsUndefined" at path "object"
     And I expect the task "tasky-mc-taskface" to exist
     And I expect this task to be about '{"nodeAggregateIdentifier":"nody-mc-nodeface", "workspaceName":"live", "dimensionSpacePoint":{}}'
 
@@ -67,4 +68,4 @@ Feature: Schedule task
       | object         | {"nodeAggregateIdentifier":"sir-david-nodenborough", "workspaceName":"live", "dimensionSpacePoint":{}} |
     Then I expect the task "tasky-mc-taskface" to exist
     And I expect this task to be about '{"nodeAggregateIdentifier":"sir-david-nodenborough", "workspaceName":"live", "dimensionSpacePoint":{}}'
-    And I expect this task to have the target "http://localhost/sir-david-nodenborough@user-me.html"
+    And I expect this task to have the adjusted target "http://localhost/neos/content?node=%2Fsites%2Fsity-mc-siteface%2Fsir-david-nodenborough%40user-me"
