@@ -2,6 +2,3 @@ Sitegeist:
   Bitzer:
     factories:
       'Sitegeist\Bitzer\Review\Domain\Task\Review\ReviewTask': 'Sitegeist\Bitzer\Review\Domain\Task\Review\ReviewTaskFactory'
-    constraintCheckPlugins:
-      'Sitegeist\Bitzer\Review\Domain\Task\Review\ReviewTask':
-        'Sitegeist\Bitzer\Review\Domain\Task\Review\ReviewTaskConstraintCheckPlugin': true
