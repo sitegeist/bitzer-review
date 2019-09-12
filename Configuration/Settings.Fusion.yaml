@@ -1,0 +1,5 @@
+Sitegeist:
+  Bitzer:
+    fusion:
+      autoInclude:
+        Sitegeist.Bitzer.Review: true

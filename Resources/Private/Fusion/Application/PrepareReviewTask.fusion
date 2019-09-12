@@ -1,0 +1,37 @@
+prototype(Sitegeist.Bitzer.Review:Application.PrepareReviewTask) < prototype(Neos.Fusion:Component) {
+    agents = ${[]}
+    constraintCheckResult = ${[]}
+    command = null
+
+    @context.scheduleCommandUri = Sitegeist.Bitzer:CommandUri {
+        commandName = 'scheduleTask'
+    }
+    @context.scheduleUri = Sitegeist.Bitzer:CommandUri {
+        commandName = 'schedule'
+    }
+    @context.objects = ${Bitzer.Object.getObjects()}
+
+    renderer = afx`
+        <Sitegeist.Bitzer:FlashMessages />
+        <Neos.Fusion:Debug value={props.constraintCheckResult} />
+        <div class="neos-row-fluid neos-module-container">
+            <form action={scheduleCommandUri} method="POST">
+                <h2>{${Translation.translate('scheduleTask.label', null, [], 'Module.Bitzer', 'Sitegeist.Bitzer')}}</h2>
+                <input type="hidden" name="__csrfToken" value={${Security.csrfToken()}} />
+                <input type="hidden" name="moduleArguments[taskClassName]" value={String.toString(taskClassName)} />
+                <div class="neos-row-fluid">
+                    <Sitegeist.Bitzer:Component.ScheduledDate constraintCheckResult={props.constraintCheckResult} command={props.command} />
+                    <Sitegeist.Bitzer:Component.Agent agents={props.agents} constraintCheckResult={props.constraintCheckResult} command={props.command} />
+                </div>
+                <div class="neos-row-fluid">
+                    <Sitegeist.Bitzer:Component.Description agents={props.agents} constraintCheckResult={props.constraintCheckResult} command={props.command} />
+                    <Sitegeist.Bitzer:Component.Object objects={objects} constraintCheckResult={props.constraintCheckResult} command={props.command} />
+                </div>
+                <div class="neos-footer">
+                    <a class="neos-button" href={scheduleUri}>{${Translation.translate('actions.cancel.label', null, [], 'Module.Bitzer', 'Sitegeist.Bitzer')}}</a>
+                    <input class="neos-button neos-button-primary" type="submit" name="" value={${Translation.translate('scheduleTask.label', null, [], 'Module.Bitzer', 'Sitegeist.Bitzer')}} />
+                </div>
+            </form>
+        </div>
+    `
+}
