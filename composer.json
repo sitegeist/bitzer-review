@@ -3,11 +3,11 @@
     "type": "neos-package",
     "description": "The review plugin for the Bitzer content lifecycle task manager for Neos CMS",
     "require": {
-        "neos/neos": "~4.3",
-        "neos/neos-ui": "~3.0",
-        "neos/fusion": "~4.3",
-        "neos/content-repository": "~4.3",
-        "neos/fusion-afx": "~1.2",
+        "neos/neos": "~5.0",
+        "neos/neos-ui": "~5.0",
+        "neos/fusion": "~5.0",
+        "neos/content-repository": "~5.0",
+        "neos/fusion-afx": "~1.4",
         "sitegeist/bitzer": "*"
     },
     "autoload": {
