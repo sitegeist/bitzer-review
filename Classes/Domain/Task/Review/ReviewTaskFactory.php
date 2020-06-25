@@ -4,8 +4,8 @@ namespace Sitegeist\Bitzer\Review\Domain\Task\Review;
 
 use Neos\ContentRepository\Domain\Projection\Content\TraversableNodeInterface;
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Http\Request;
-use Neos\Flow\Http\Uri;
+use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\Uri;
 use Neos\Flow\Mvc\ActionRequest;
 use Neos\Flow\Mvc\Routing\UriBuilder;
 use Neos\Neos\Service\UserService;
@@ -69,8 +69,8 @@ class ReviewTaskFactory implements TaskFactoryInterface
 
     private function buildBackendUri(TraversableNodeInterface $object): Uri
     {
-        $request = Request::createFromEnvironment();
-        $actionRequest = new ActionRequest($request);
+        $httpRequest = ServerRequest::fromGlobals();
+        $actionRequest = ActionRequest::fromHttpRequest($httpRequest);
         $uriBuilder = new UriBuilder();
         $uriBuilder->setRequest($actionRequest);
         $uriBuilder->setCreateAbsoluteUri(true);
