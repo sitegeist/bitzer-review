@@ -17,6 +17,7 @@ use Sitegeist\Bitzer\Domain\Task\Schedule;
 use Sitegeist\Bitzer\Domain\Task\ScheduledTime;
 use Sitegeist\Bitzer\Domain\Task\TaskClassName;
 use Sitegeist\Bitzer\Domain\Task\TaskIdentifier;
+use Sitegeist\Bitzer\Domain\Agent\Agent;
 
 /**
  * The review task generator event listener
@@ -114,7 +115,7 @@ class ReviewTaskZookeeper
                 TaskIdentifier::create(),
                 $taskClassName,
                 $scheduledTime,
-                $this->reviewAgent,
+                Agent::fromString($this->reviewAgent),
                 $object,
                 null,
                 ['description' => 'auto generated review task']

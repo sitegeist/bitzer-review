@@ -3,4 +3,4 @@ Sitegeist:
     Review:
       review:
         interval: 'P6M'
-        agent: 'Neos.Neos:Editor'
+        agent: 'role:Neos.Neos:Editor'
