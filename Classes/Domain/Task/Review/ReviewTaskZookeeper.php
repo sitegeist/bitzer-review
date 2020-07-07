@@ -87,7 +87,7 @@ class ReviewTaskZookeeper
     private function scheduleReviewTask(NodeAddress $object): void
     {
         $taskClassName = TaskClassName::createFromString(ReviewTask::class);
-        $tasks = $this->schedule->findPotentialTasksOfClassForObject($taskClassName, $object);
+        $tasks = $this->schedule->findActiveOrPotentialTasksForObject($object);
         $now = ScheduledTime::now();
         $scheduledTime = $now->add(new \DateInterval($this->reviewInterval));
 
