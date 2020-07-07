@@ -17,6 +17,7 @@ use Sitegeist\Bitzer\Domain\Task\TaskClassName;
 use Sitegeist\Bitzer\Domain\Task\TaskFactoryInterface;
 use Sitegeist\Bitzer\Domain\Task\TaskIdentifier;
 use Sitegeist\Bitzer\Domain\Task\TaskInterface;
+use Sitegeist\Bitzer\Domain\Agent\Agent;
 
 /**
  * The review task factory
@@ -43,7 +44,7 @@ class ReviewTaskFactory implements TaskFactoryInterface
         array $properties,
         \DateTimeImmutable $scheduledTime,
         ActionStatusType $actionStatus,
-        string $agent,
+        Agent $agent,
         ?NodeAddress $object,
         ?UriInterface $target
     ): TaskInterface {
