@@ -61,11 +61,9 @@ class ReviewTaskZookeeper
     public function whenNodeAggregateWasPublished(TraversableNodeInterface $node, Workspace $workspace): void
     {
         if ($this->taskAutoGenerationEnabled && $workspace->getName() === 'live') {
-            if ($node->isRemoved()) {
-                if ($node->getNodeType()->isOfType('Neos.Neos:Document')) {
-                    $object = NodeAddress::createLiveFromNode($node);
-                    $this->removeObsoleteTasks($object);
-                }
+            if ($node->isRemoved() && $node->getNodeType()->isOfType('Neos.Neos:Document')) {
+                $object = NodeAddress::createLiveFromNode($node);
+                $this->removeObsoleteTasks($object);
             } else {
                 $document = $this->findClosestDocument($node);
                 if ($document && $workspace->getName() === 'live') {
