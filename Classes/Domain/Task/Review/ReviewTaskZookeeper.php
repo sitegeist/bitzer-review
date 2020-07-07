@@ -8,6 +8,7 @@ use Neos\ContentRepository\Exception\NodeException;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Sitegeist\Bitzer\Application\Bitzer;
+use Sitegeist\Bitzer\Domain\Task\ActionStatusType;
 use Sitegeist\Bitzer\Domain\Task\Command\CancelTask;
 use Sitegeist\Bitzer\Domain\Task\Command\RescheduleTask;
 use Sitegeist\Bitzer\Domain\Task\Command\ScheduleTask;
@@ -73,6 +74,15 @@ class ReviewTaskZookeeper
                     $this->scheduleReviewTask($object);
                 }
             }
+        }
+    }
+
+    public function whenTaskActionStatusWasUpdated(TaskIdentifier $taskIdentifier, ActionStatusType $actionStatus = null): void
+    {
+        $task = $this->schedule->findByIdentifier($taskIdentifier);
+        if ($task instanceof ReviewTask && $actionStatus->equals(ActionStatusType::completed()) ) {
+
+            $this->scheduleReviewTask(NodeAddress::createLiveFromNode($task->getObject()));
         }
     }
 
