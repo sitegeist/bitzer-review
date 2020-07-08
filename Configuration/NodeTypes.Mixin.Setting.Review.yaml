@@ -1,0 +1,5 @@
+'Sitegeist.Bitzer.Review:Mixin.Setting.Review':
+  abstract: true
+  superTypes:
+    'Sitegeist.Bitzer:Mixin.Setting.Agent': true
+    'Sitegeist.Bitzer:Mixin.Setting.Interval': true
