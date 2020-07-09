@@ -33,12 +33,6 @@ class ReviewTaskZookeeper
     protected $taskAutoGenerationEnabled;
 
     /**
-     * @Flow\InjectConfiguration(package="Sitegeist.Bitzer.Review", path="review.interval")
-     * @var bool
-     */
-    protected $reviewInterval;
-
-    /**
      * @Flow\Inject
      * @var Bitzer
      */
@@ -71,6 +65,7 @@ class ReviewTaskZookeeper
             } else {
                 $document = $this->findClosestDocument($node);
                 $agent = $this->getAgentFromNode($document);
+                $interval = new \DateInterval($document->getProperty('bitzerTaskInterval'));
 
                 if ($document && $workspace->getName() === 'live') {
                     // we need to persist the node data objects for soft constraint checks
@@ -78,7 +73,7 @@ class ReviewTaskZookeeper
                     $object = NodeAddress::createLiveFromNode($document);
 
                     if ($agent) {
-                        $this->scheduleReviewTask($object, $agent);
+                        $this->scheduleReviewTask($object, $agent, $interval);
                     } else {
                         $this->removeObsoleteTasks($object);
                     }
@@ -91,10 +86,10 @@ class ReviewTaskZookeeper
     {
         $task = $this->schedule->findByIdentifier($taskIdentifier);
         if ($task instanceof ReviewTask && $actionStatus->equals(ActionStatusType::completed()) ) {
-
             $this->scheduleReviewTask(
                 NodeAddress::createLiveFromNode($task->getObject()),
-                $task->getAgent()
+                $task->getAgent(),
+                new \DateInterval($task->getObject()->getProperty('bitzerTaskInterval'))
             );
         }
     }
@@ -107,12 +102,12 @@ class ReviewTaskZookeeper
         }
     }
 
-    private function scheduleReviewTask(NodeAddress $object, Agent $agent): void
+    private function scheduleReviewTask(NodeAddress $object, Agent $agent, \DateInterval $interval): void
     {
         $taskClassName = TaskClassName::createFromString(ReviewTask::class);
         $tasks = $this->schedule->findActiveOrPotentialTasksForObject($object);
         $now = ScheduledTime::now();
-        $scheduledTime = $now->add(new \DateInterval($this->reviewInterval));
+        $scheduledTime = $now->add($interval);
 
         if (count($tasks) > 0) {
             foreach ($tasks as $task) {
