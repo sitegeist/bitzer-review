@@ -65,14 +65,14 @@ class ReviewTaskZookeeper
             } else {
                 $document = $this->findClosestDocument($node);
                 $agent = $this->getAgentFromNode($document);
-                $interval = new \DateInterval($document->getProperty('bitzerTaskInterval'));
 
                 if ($document && $workspace->getName() === 'live') {
                     // we need to persist the node data objects for soft constraint checks
                     $this->persistenceManager->persistAll();
                     $object = NodeAddress::createLiveFromNode($document);
 
-                    if ($agent) {
+                    if ($agent && $document->getProperty('bitzerTaskInterval')) {
+                        $interval = new \DateInterval($document->getProperty('bitzerTaskInterval'));
                         $this->scheduleReviewTask($object, $agent, $interval);
                     } else {
                         $this->removeObsoleteTasks($object);
