@@ -59,8 +59,8 @@ final class ReviewTask implements TaskInterface
      * @param \DateTimeImmutable $scheduledTime
      * @param ActionStatusType $actionStatus
      * @param Agent $agent
-     * @param NodeInterface|null $object
-     * @param UriInterface $target
+     * @param TraversableNodeInterface|null $object
+     * @param UriInterface|null $target
      */
     public function __construct(
         TaskIdentifier $identifier,
