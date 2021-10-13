@@ -1,0 +1,4 @@
+'Sitegeist\Bitzer\Review\Domain\Task\Review\ReviewTaskZookeeper':
+  arguments:
+    1:
+      setting: 'Sitegeist.Bitzer.taskAutoGenerationEnabled'

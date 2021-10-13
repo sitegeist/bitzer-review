@@ -1,8 +1,6 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 namespace Sitegeist\Bitzer\Review\Domain\Task\Review;
 
-use Neos\ContentRepository\Domain\Model\NodeInterface;
 use Neos\ContentRepository\Domain\Projection\Content\TraversableNodeInterface;
 use Neos\Flow\Annotations as Flow;
 use Psr\Http\Message\UriInterface;
@@ -17,51 +15,20 @@ use Sitegeist\Bitzer\Domain\Agent\Agent;
  */
 final class ReviewTask implements TaskInterface
 {
-    /**
-     * @var TaskIdentifier
-     */
-    private $identifier;
+    private TaskIdentifier $identifier;
 
-    /**
-     * @var string
-     */
-    private $properties;
+    private array $properties;
 
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $scheduledTime;
+    private \DateTimeImmutable $scheduledTime;
 
-    /**
-     * @var ActionStatusType
-     */
-    private $actionStatus;
+    private ActionStatusType $actionStatus;
 
-    /**
-     * @var Agent
-     */
-    private $agent;
+    private Agent $agent;
 
-    /**
-     * @var NodeInterface|null
-     */
-    private $object;
+    private ?TraversableNodeInterface $object;
 
-    /**
-     * @var UriInterface|null
-     */
-    private $target;
+    private ?UriInterface $target;
 
-    /**
-     * GenericTask constructor.
-     * @param TaskIdentifier $identifier
-     * @param array $properties
-     * @param \DateTimeImmutable $scheduledTime
-     * @param ActionStatusType $actionStatus
-     * @param Agent $agent
-     * @param NodeInterface|null $object
-     * @param UriInterface $target
-     */
     public function __construct(
         TaskIdentifier $identifier,
         array $properties,
@@ -85,7 +52,6 @@ final class ReviewTask implements TaskInterface
         return 'review';
     }
 
-
     public function getIdentifier(): TaskIdentifier
     {
         return $this->identifier;
@@ -93,8 +59,6 @@ final class ReviewTask implements TaskInterface
 
     /**
      * The image describing the task. Must be a FontAwesome icon identifier available to the Neos UI.
-     *
-     * @return string
      */
     public function getImage(): string
     {
@@ -103,8 +67,6 @@ final class ReviewTask implements TaskInterface
 
     /**
      * A description of the task.
-     *
-     * @return string
      */
     public function getDescription(): string
     {
@@ -113,8 +75,6 @@ final class ReviewTask implements TaskInterface
 
     /**
      * The time the object is scheduled to.
-     *
-     * @return \DateTimeImmutable
      */
     public function getScheduledTime(): \DateTimeImmutable
     {
@@ -123,8 +83,6 @@ final class ReviewTask implements TaskInterface
 
     /**
      * Indicates the current disposition of the Action.
-     *
-     * @return ActionStatusType
      */
     public function getActionStatus(): ActionStatusType
     {
@@ -134,8 +92,6 @@ final class ReviewTask implements TaskInterface
     /**
      * The direct performer or driver of the action (animate or inanimate). e.g. John wrote a book.
      * In our case, as tasks are assigned to user groups, this is a Flow policy role identifier.
-     *
-     * @return Agent
      */
     public function getAgent(): Agent
     {
@@ -147,8 +103,6 @@ final class ReviewTask implements TaskInterface
      * Also known as the semantic roles patient, affected or undergoer (which change their state) or theme (which doesn't).
      *
      * For now, we expect that only nodes are affected by tasks, if at all.
-     *
-     * @return TraversableNodeInterface|null
      */
     public function getObject(): ?TraversableNodeInterface
     {
@@ -159,8 +113,6 @@ final class ReviewTask implements TaskInterface
      * Indicates a target EntryPoint for an Action.
      *
      * In our case this is the URI for the next action to be done within this task.
-     *
-     * @return UriInterface|null
      */
     public function getTarget(): ?UriInterface
     {

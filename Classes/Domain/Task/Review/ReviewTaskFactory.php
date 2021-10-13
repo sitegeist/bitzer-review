@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 namespace Sitegeist\Bitzer\Review\Domain\Task\Review;
 
 use Neos\ContentRepository\Domain\Projection\Content\TraversableNodeInterface;
@@ -21,22 +20,23 @@ use Sitegeist\Bitzer\Domain\Agent\Agent;
 
 /**
  * The review task factory
- *
  * Creates review task objects with proper targets
+ *
+ * @Flow\Scope("singleton")
  */
-class ReviewTaskFactory implements TaskFactoryInterface
+final class ReviewTaskFactory implements TaskFactoryInterface
 {
-    /**
-     * @Flow\Inject
-     * @var UserService
-     */
-    protected $userService;
+    private UserService $userService;
 
-    /**
-     * @Flow\Inject
-     * @var ObjectRepository
-     */
-    protected $objectRepository;
+    private ObjectRepository $objectRepository;
+
+    public function __construct(
+        UserService $userService,
+        ObjectRepository $objectRepository
+    ) {
+        $this->userService = $userService;
+        $this->objectRepository = $objectRepository;
+    }
 
     final public function createFromRawData(
         TaskIdentifier $identifier,
