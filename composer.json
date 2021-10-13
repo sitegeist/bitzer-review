@@ -8,7 +8,7 @@
         "neos/fusion": "~7.0",
         "neos/content-repository": "~7.0",
         "neos/fusion-afx": "~7.0",
-        "sitegeist/bitzer": "*"
+        "sitegeist/bitzer": "~2.0"
     },
     "autoload": {
         "psr-4": {

@@ -32,6 +32,5 @@ prototype(Sitegeist.Bitzer.Review:Application.PrepareReviewTask) < prototype(Neo
                     <input class="neos-button neos-button-primary" type="submit" name="" value={${Translation.translate('scheduleTask.label', null, [], 'Module.Bitzer', 'Sitegeist.Bitzer')}} />
                 </div>
             </form>
-        </div>
-    `
+        </div>`
 }
