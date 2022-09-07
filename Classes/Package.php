@@ -6,6 +6,7 @@ use Neos\ContentRepository\Domain\Service\PublishingService;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Package as BasePackage;
 use Sitegeist\Bitzer\Review\Domain\Task\Review\ReviewTaskZookeeper;
+use Sitegeist\Bitzer\Domain\Task\Schedule;
 
 /**
  * The Sitegeist.Bitzer.Review
@@ -25,6 +26,13 @@ class Package extends BasePackage
             'nodePublished',
             ReviewTaskZookeeper::class,
             'whenNodeAggregateWasPublished'
+        );
+
+        $dispatcher->connect(
+            Schedule::class,
+            'taskActionStatusUpdated',
+            ReviewTaskZookeeper::class,
+            'whenTaskActionStatusWasUpdated'
         );
     }
 }

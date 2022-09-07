@@ -1,6 +1,0 @@
-Sitegeist:
-  Bitzer:
-    Review:
-      review:
-        interval: 'P6M'
-        agent: 'Neos.Neos:Editor'
