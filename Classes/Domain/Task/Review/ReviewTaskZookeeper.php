@@ -77,7 +77,7 @@ final class ReviewTaskZookeeper
     public function whenTaskActionStatusWasUpdated(TaskIdentifier $taskIdentifier, ActionStatusType $actionStatus = null): void
     {
         $task = $this->schedule->findByIdentifier($taskIdentifier);
-        if ($task instanceof ReviewTask && $actionStatus->equals(ActionStatusType::completed()) ) {
+        if ($task instanceof ReviewTask && $actionStatus->equals(ActionStatusType::completed()) && $task->getObject()) {
             $this->scheduleReviewTask(
                 NodeAddress::liveFromNode($task->getObject()),
                 $task->getAgent(),
