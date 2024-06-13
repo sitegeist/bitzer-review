@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Sitegeist\Bitzer\Review\Domain\Task\Review;
 
 use Neos\ContentRepository\Domain\Projection\Content\TraversableNodeInterface;
@@ -11,40 +14,22 @@ use Sitegeist\Bitzer\Domain\Agent\Agent;
 
 /**
  * The review task domain entity
- * @Flow\Proxy(false)
  */
+#[Flow\Proxy(false)]
 final class ReviewTask implements TaskInterface
 {
-    private TaskIdentifier $identifier;
-
-    private array $properties;
-
-    private \DateTimeImmutable $scheduledTime;
-
-    private ActionStatusType $actionStatus;
-
-    private Agent $agent;
-
-    private ?TraversableNodeInterface $object;
-
-    private ?UriInterface $target;
-
+    /**
+     * @param array<string,mixed> $properties
+     */
     public function __construct(
-        TaskIdentifier $identifier,
-        array $properties,
-        \DateTimeImmutable $scheduledTime,
-        ActionStatusType $actionStatus,
-        Agent $agent,
-        ?TraversableNodeInterface $object,
-        ?UriInterface $target
+        public readonly TaskIdentifier $identifier,
+        public readonly array $properties,
+        public readonly \DateTimeImmutable $scheduledTime,
+        public readonly ActionStatusType $actionStatus,
+        public readonly Agent $agent,
+        public readonly ?TraversableNodeInterface $object,
+        public readonly ?UriInterface $target
     ) {
-        $this->identifier = $identifier;
-        $this->properties = $properties;
-        $this->scheduledTime = $scheduledTime;
-        $this->actionStatus = $actionStatus;
-        $this->agent = $agent;
-        $this->object = $object;
-        $this->target = $target;
     }
 
     public static function getShortType(): string
@@ -119,6 +104,9 @@ final class ReviewTask implements TaskInterface
         return $this->target;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function getProperties(): array
     {
         return $this->properties;

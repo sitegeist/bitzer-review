@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Sitegeist\Bitzer\Review\Domain\Task\Review;
 
 use Neos\Flow\Annotations as Flow;
@@ -20,15 +23,14 @@ use Sitegeist\Bitzer\Domain\Task\NodeAddress;
 
 /**
  * The constraint check plugins for commands operating on review tasks
- *
- * @Flow\Proxy(false)
  */
+#[Flow\Proxy(false)]
 final class ReviewTaskConstraintCheckPlugin implements ConstraintCheckPluginInterface
 {
     public function checkScheduleTask(ScheduleTask $command, ConstraintCheckResult $constraintCheckResult = null): void
     {
-        $this->requireObjectToBeDefined($command->getObject(), $constraintCheckResult);
-        $this->requireTargetToBeUnset($command->getTarget(), $constraintCheckResult);
+        $this->requireObjectToBeDefined($command->object, $constraintCheckResult);
+        $this->requireTargetToBeUnset($command->target, $constraintCheckResult);
     }
 
     public function checkRescheduleTask(
@@ -47,14 +49,14 @@ final class ReviewTaskConstraintCheckPlugin implements ConstraintCheckPluginInte
         SetNewTaskTarget $command,
         ConstraintCheckResult $constraintCheckResult = null
     ): void {
-        $this->requireTargetToBeUnset($command->getTarget());
+        $this->requireTargetToBeUnset($command->target);
     }
 
     public function checkSetNewTaskObject(
         SetNewTaskObject $command,
         ConstraintCheckResult $constraintCheckResult = null
     ): void {
-        $this->requireObjectToBeDefined($command->getObject(), $constraintCheckResult);
+        $this->requireObjectToBeDefined($command->object, $constraintCheckResult);
     }
 
     public function checkSetTaskProperties(

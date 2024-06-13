@@ -1,6 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Sitegeist\Bitzer\Review\Domain\Task\Review;
 
+use Neos\ContentRepository\Domain\Model\Node;
 use Neos\ContentRepository\Domain\Model\Workspace;
 use Neos\ContentRepository\Domain\Projection\Content\TraversableNodeInterface;
 use Neos\ContentRepository\Exception\NodeException;
@@ -23,33 +27,21 @@ use Sitegeist\Bitzer\Domain\Agent\AgentRepository;
 
 /**
  * The review task generator event listener
- *
- * @Flow\Scope("singleton")
  */
+#[Flow\Scope('singleton')]
 final class ReviewTaskZookeeper
 {
-    private bool $taskAutoGenerationEnabled;
-
-    private Bitzer $bitzer;
-
-    private Schedule $schedule;
-
-    private AgentRepository $agentRepository;
-
     public function __construct(
-        bool $taskAutoGenerationEnabled,
-        Bitzer $bitzer,
-        Schedule $schedule,
-        AgentRepository $agentRepository
+        private readonly bool $taskAutoGenerationEnabled,
+        private readonly Bitzer $bitzer,
+        private readonly Schedule $schedule,
+        private readonly AgentRepository $agentRepository
     ) {
-        $this->taskAutoGenerationEnabled = $taskAutoGenerationEnabled;
-        $this->bitzer = $bitzer;
-        $this->schedule = $schedule;
-        $this->agentRepository = $agentRepository;
     }
 
     public function whenNodeAggregateWasPublished(TraversableNodeInterface $node, Workspace $workspace): void
     {
+        /** @var Node $node */
         if ($this->taskAutoGenerationEnabled && $workspace->getName() === 'live') {
             if ($node->isRemoved()) {
                 if ($node->getNodeType()->isOfType('Neos.Neos:Document')) {
@@ -79,7 +71,7 @@ final class ReviewTaskZookeeper
     public function whenTaskActionStatusWasUpdated(TaskIdentifier $taskIdentifier, ActionStatusType $actionStatus = null): void
     {
         $task = $this->schedule->findByIdentifier($taskIdentifier);
-        if ($task instanceof ReviewTask && $actionStatus->equals(ActionStatusType::completed()) && $task->getObject()) {
+        if ($task instanceof ReviewTask && $actionStatus === ActionStatusType::TYPE_COMPLETED && $task->getObject()) {
             $this->scheduleReviewTask(
                 NodeAddress::liveFromNode($task->getObject()),
                 $task->getAgent(),
@@ -132,7 +124,7 @@ final class ReviewTaskZookeeper
                 if (!$task->getAgent()->equals($agent)) {
                     $command = new ReassignTask(
                         $task->getIdentifier(),
-                        $agent
+                        $agent->identifier
                     );
                     $this->bitzer->handleReassignTask($command);
                 }
@@ -142,7 +134,7 @@ final class ReviewTaskZookeeper
                 TaskIdentifier::create(),
                 $taskClassName,
                 $scheduledTime,
-                $agent,
+                $agent->identifier,
                 $object,
                 null,
                 ['description' => $description]

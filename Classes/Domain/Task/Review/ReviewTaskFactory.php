@@ -1,4 +1,7 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
+
 namespace Sitegeist\Bitzer\Review\Domain\Task\Review;
 
 use Neos\ContentRepository\Domain\Projection\Content\TraversableNodeInterface;
@@ -21,23 +24,19 @@ use Sitegeist\Bitzer\Domain\Agent\Agent;
 /**
  * The review task factory
  * Creates review task objects with proper targets
- *
- * @Flow\Scope("singleton")
  */
+#[Flow\Scope('singleton')]
 final class ReviewTaskFactory implements TaskFactoryInterface
 {
-    private UserService $userService;
-
-    private ObjectRepository $objectRepository;
-
     public function __construct(
-        UserService $userService,
-        ObjectRepository $objectRepository
+        private readonly UserService $userService,
+        private readonly ObjectRepository $objectRepository
     ) {
-        $this->userService = $userService;
-        $this->objectRepository = $objectRepository;
     }
 
+    /**
+     * @param array<string,mixed> $properties
+     */
     final public function createFromRawData(
         TaskIdentifier $identifier,
         TaskClassName $className,
@@ -50,11 +49,11 @@ final class ReviewTaskFactory implements TaskFactoryInterface
     ): TaskInterface {
         $currentAgentWorkspaceName = $this->userService->getPersonalWorkspaceName();
         $objectAddressInUserWorkspace = $currentAgentWorkspaceName
-            ? $object->withWorkspaceName($currentAgentWorkspaceName)
+            ? $object?->withWorkspaceName($currentAgentWorkspaceName)
             : $object;
 
-        $object = $this->objectRepository->findByAddress($object);
-        $objectInUserWorkspace = $this->objectRepository->findByAddress($objectAddressInUserWorkspace);
+        $object = $object ? $this->objectRepository->findByAddress($object) : null;
+        $objectInUserWorkspace = $objectAddressInUserWorkspace ? $this->objectRepository->findByAddress($objectAddressInUserWorkspace) : null;
         $target = $objectInUserWorkspace ? $this->buildBackendUri($objectInUserWorkspace) : null;
 
         return new ReviewTask(
