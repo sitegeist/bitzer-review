@@ -11,10 +11,10 @@ use Neos\ContentRepository\Exception\NodeException;
 use Neos\Flow\Annotations as Flow;
 use Sitegeist\Bitzer\Application\Bitzer;
 use Sitegeist\Bitzer\Domain\Agent\AgentIdentifier;
+use Sitegeist\Bitzer\Domain\Agent\Agents;
 use Sitegeist\Bitzer\Domain\Task\ActionStatusType;
 use Sitegeist\Bitzer\Domain\Task\Command\CancelTask;
 use Sitegeist\Bitzer\Domain\Task\Command\RescheduleTask;
-use Sitegeist\Bitzer\Domain\Task\Command\ReassignTask;
 use Sitegeist\Bitzer\Domain\Task\Command\ScheduleTask;
 use Sitegeist\Bitzer\Domain\Task\Command\SetTaskProperties;
 use Sitegeist\Bitzer\Domain\Task\NodeAddress;
@@ -52,14 +52,16 @@ final class ReviewTaskZookeeper
                 $document = $this->findClosestDocument($node);
 
                 if ($document) {
-                    $agent = $this->getAgentFromNode($document);
+                    $agents = $this->getAgentsFromNode($document);
                     $object = NodeAddress::liveFromNode($document);
 
-                    if ($agent && $document->getProperty('bitzerTaskInterval')) {
+                    if (!$agents->isEmpty() && $document->getProperty('bitzerTaskInterval')) {
                         $interval = new \DateInterval($document->getProperty('bitzerTaskInterval'));
                         $description = $document->getProperty('bitzerTaskDescription')
                             ?: 'auto generated review task';
-                        $this->scheduleReviewTask($object, $agent, $interval, $description);
+                        foreach ($agents as $agent) {
+                            $this->scheduleReviewTask($object, $agent, $interval, $description);
+                        }
                     } else {
                         $this->removeObsoleteTasks($object);
                     }
@@ -96,7 +98,7 @@ final class ReviewTaskZookeeper
         string $description
     ): void {
         $taskClassName = TaskClassName::createFromString(ReviewTask::class);
-        $tasks = $this->schedule->findActiveOrPotentialTasksForObject($object);
+        $tasks = $this->schedule->findActiveOrPotentialTasksForObject($object, $taskClassName, $agent->identifier);
         $now = ScheduledTime::now();
         $scheduledTime = $now->add($interval);
 
@@ -119,14 +121,6 @@ final class ReviewTaskZookeeper
                         )
                     );
                     $this->bitzer->handleSetTaskProperties($setTaskProperties);
-                }
-
-                if (!$task->getAgent()->equals($agent)) {
-                    $command = new ReassignTask(
-                        $task->getIdentifier(),
-                        $agent->identifier
-                    );
-                    $this->bitzer->handleReassignTask($command);
                 }
             }
         } else {
@@ -155,14 +149,25 @@ final class ReviewTaskZookeeper
         }
     }
 
-    private function getAgentFromNode(TraversableNodeInterface $node): ?Agent
+    private function getAgentsFromNode(TraversableNodeInterface $node): Agents
     {
-        if (empty($node->getProperty('bitzerTaskAgent'))) {
-            return null;
+        $agentIds = array_map(
+            fn (string $value): ?AgentIdentifier => AgentIdentifier::tryFromString($value),
+            $node->getProperty('bitzerTaskAgents') ?: [],
+        );
+
+        $agents = [];
+        foreach ($agentIds as $agentId) {
+            if ($agentId instanceof AgentIdentifier) {
+                $agent = $this->agentRepository->findByIdentifier(
+                    $agentId
+                );
+                if ($agent instanceof Agent) {
+                    $agents[] = $agent;
+                }
+            }
         }
 
-        return $this->agentRepository->findByIdentifier(
-            AgentIdentifier::fromString($node->getProperty('bitzerTaskAgent'))
-        );
+        return new Agents(...$agents);
     }
 }
