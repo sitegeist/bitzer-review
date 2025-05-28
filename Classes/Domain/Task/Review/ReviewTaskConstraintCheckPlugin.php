@@ -27,7 +27,7 @@ use Sitegeist\Bitzer\Domain\Task\NodeAddress;
 #[Flow\Proxy(false)]
 final class ReviewTaskConstraintCheckPlugin implements ConstraintCheckPluginInterface
 {
-    public function checkScheduleTask(ScheduleTask $command, ConstraintCheckResult $constraintCheckResult = null): void
+    public function checkScheduleTask(ScheduleTask $command, ?ConstraintCheckResult $constraintCheckResult = null): void
     {
         $this->requireObjectToBeDefined($command->object, $constraintCheckResult);
         $this->requireTargetToBeUnset($command->target, $constraintCheckResult);
@@ -35,55 +35,55 @@ final class ReviewTaskConstraintCheckPlugin implements ConstraintCheckPluginInte
 
     public function checkRescheduleTask(
         RescheduleTask $command,
-        ConstraintCheckResult $constraintCheckResult = null
+        ?ConstraintCheckResult $constraintCheckResult = null
     ): void {
         // rescheduling tasks has no effect on objects
     }
 
-    public function checkReassignTask(ReassignTask $command, ConstraintCheckResult $constraintCheckResult = null): void
+    public function checkReassignTask(ReassignTask $command, ?ConstraintCheckResult $constraintCheckResult = null): void
     {
         // reassigning tasks has no effect on objects
     }
 
     public function checkSetNewTaskTarget(
         SetNewTaskTarget $command,
-        ConstraintCheckResult $constraintCheckResult = null
+        ?ConstraintCheckResult $constraintCheckResult = null
     ): void {
         $this->requireTargetToBeUnset($command->target);
     }
 
     public function checkSetNewTaskObject(
         SetNewTaskObject $command,
-        ConstraintCheckResult $constraintCheckResult = null
+        ?ConstraintCheckResult $constraintCheckResult = null
     ): void {
         $this->requireObjectToBeDefined($command->object, $constraintCheckResult);
     }
 
     public function checkSetTaskProperties(
         SetTaskProperties $command,
-        ConstraintCheckResult $constraintCheckResult = null
+        ?ConstraintCheckResult $constraintCheckResult = null
     ): void {
         // setting tasks has no effect on objects
     }
 
-    public function checkCancelTask(CancelTask $command, ConstraintCheckResult $constraintCheckResult = null): void
+    public function checkCancelTask(CancelTask $command, ?ConstraintCheckResult $constraintCheckResult = null): void
     {
         // cancelling tasks has no direct effect on objects
     }
 
-    public function checkActivateTask(ActivateTask $command, ConstraintCheckResult $constraintCheckResult = null): void
+    public function checkActivateTask(ActivateTask $command, ?ConstraintCheckResult $constraintCheckResult = null): void
     {
         // activating tasks has no effect on objects
     }
 
-    public function checkCompleteTask(CompleteTask $command, ConstraintCheckResult $constraintCheckResult = null): void
+    public function checkCompleteTask(CompleteTask $command, ?ConstraintCheckResult $constraintCheckResult = null): void
     {
         // completing tasks has no effect on objects
     }
 
     private function requireObjectToBeDefined(
         ?NodeAddress $object,
-        ConstraintCheckResult $constraintCheckResult = null
+        ?ConstraintCheckResult $constraintCheckResult = null
     ): void {
         if (!$object) {
             $exception = ObjectIsUndefined::althoughExpected();
@@ -97,7 +97,7 @@ final class ReviewTaskConstraintCheckPlugin implements ConstraintCheckPluginInte
 
     private function requireTargetToBeUnset(
         ?UriInterface $target,
-        ConstraintCheckResult $constraintCheckResult = null
+        ?ConstraintCheckResult $constraintCheckResult = null
     ): void {
         if ($target) {
             $exception = new TargetIsInvalid('Review tasks generate their own targets, so target must not be set explicitly.', 1568214974);

@@ -70,7 +70,7 @@ final class ReviewTaskZookeeper
         }
     }
 
-    public function whenTaskActionStatusWasUpdated(TaskIdentifier $taskIdentifier, ActionStatusType $actionStatus = null): void
+    public function whenTaskActionStatusWasUpdated(TaskIdentifier $taskIdentifier, ?ActionStatusType $actionStatus = null): void
     {
         $task = $this->schedule->findByIdentifier($taskIdentifier);
         if ($task instanceof ReviewTask && $actionStatus === ActionStatusType::TYPE_COMPLETED && $task->getObject()) {
